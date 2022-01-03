@@ -13,11 +13,10 @@ int main()
     printf("%d\n",is_builtin_array(1));;
     mutex_guard guard=make_mutex_guard(&mutex);
     printf("%d\n",type_is_same(1,int()));
-    ({typeof(a) b; ((intptr_t)(b)==(intptr_t)(&b));});
     printf("%d\n",count_macro_args());
     int x=1,y=2;
     swap(&x,&y);
-    assert_return(1==0,0,printf("111 \n"));
+    assert_return(1==1,0,printf("111 \n"));
     attr_unused typeof(a) *pa=&a;
     printf("%d\n",type_is_integral(struct{int x;}));
     tuple(int,double,char) tuple = {1,2,3};
