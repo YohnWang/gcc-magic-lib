@@ -1,6 +1,6 @@
 srcs=$(wildcard *.c)
 objs=$(srcs:%.c=%.o)
-cflags = -Wall -Wextra -I .
+cflags = -O3 -Wall -Wextra -I .
 ldflags = -lpthread
 
 all: main.exe

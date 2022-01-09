@@ -6,6 +6,7 @@
 #include<stdbool.h>
 
 #define attr_unused __attribute__((unused))
+#define auto_t __auto_type
 
 // counting numbers of macro arguments
 #define count_macro_args(...) _count_macro_args_helper(0,##__VA_ARGS__,64,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
@@ -88,11 +89,24 @@
 
 // builtin array
 #define is_builtin_array(a) ({struct{typeof(a) x;} x={}; (intptr_t)(x.x)==(intptr_t)(&x.x);})
-#define static_is_builtin_array(a) ({_Static_assert(is_builtin_array(a),"not an array");is_builtin_array(a);})
-#define len_builtin_array(a) ({static_is_builtin_array(a); sizeof(a)/sizeof(a[0]);})
+#define len_builtin_array(a) ({static_assert_is_builtin_array(a); sizeof(a)/sizeof(a[0]);})
 
 // type
-#define type_is_same(T1,T2) ({typeof(T1)* x;_Generic(x,typeof(T2)*:1,default:0);})
+#define type_is_same(T1,T2) (_Generic((typeof(T1)*){0},typeof(T2)*:1,default:0))
 #define type_is_integral(T) (_Generic((typeof(T)){0},signed char:1,unsigned char:1,short:1,unsigned short:1,int:1,unsigned int:1,long:1,unsigned long:1,long long:1,unsigned long long:1,default:0))
+#define type_is_equal(T1,T2) (_Generic(typeof(T1),typeof(T2):1,default:0))
+#define type_is_signed(T) (_Generic((typeof(T)){0},signed char:1,short:1,int:1,long:1,long long:1,default:0))
+#define type_is_unsigned(T) (_Generic((typeof(T)){0},unsigned char:1,unsigned short:1,unsigned int:1,unsigned long:1,unsigned long long:1,default:0))
+#define type_is_same_sign(T1,T2) (type_is_signed(T1)==type_is_signed(T2))
+
+// static assert
+#define static_assert_is_builtin_array(a) ({_Static_assert(is_builtin_array(a),"not an array");is_builtin_array(a);})
+#define static_assert_type_is_same_0(T1,T2) _Static_assert(type_is_same(T1,T2),"type is not same")
+#define static_assert_type_is_same_1(T1,T2,errstr) _Static_assert(type_is_same(T1,T2),errstr)
+#define static_assert_type_is_same(T1,T2,...) macro_cat(static_assert_type_is_same_,count_macro_args(__VA_ARGS__))(T1,T2,##__VA_ARGS__)
+
+#define is_constexpr(expr) (__builtin_constant_p(expr))
+#define make_constint(expr) (sizeof(struct{int t;char x[expr];}) != sizeof(int))
+#define static_chose_expr(const_expr,expr1,expr2) (__builtin_choose_expr(make_constint(const_expr),expr1,expr2))
 
 #endif

@@ -1,3 +1,4 @@
+// This file is from https://github.com/YohnWang/gcc-magic-lib
 #ifndef GML_TUPLE_H
 #define GML_TUPLE_H
 
@@ -7,6 +8,7 @@
 #define tuple(...) macro_cat(tuple_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 #define tuple_def(...) macro_cat(tuple_def_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 #define tuple_get(tuple,i) macro_cat((tuple)._,i)
+#define tuple_tie(_a,_b) struct {typeof(_a) a;typeof(_b) b;} x;
 
 // private implement
 #define tuple_1(T1) macro_cat(tuple_,T1)
