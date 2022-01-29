@@ -1,45 +1,30 @@
 #include"gmllib.h"
 #include<stdio.h>
 
-extern int A[10];
-pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
-
+vector_def(int)
 tuple_def(int,double,char)
 
-void FFFF()
+void test_exmacro()
 {
-    return ;
+
 }
 
-int add_int_int(int a,int b)
+void test_raiimem()
 {
-    return a+b;
+    RAII_MEM(int*) p=malloc(sizeof(*p));
+    if(p==NULL)
+        return;
+    RAII_MEM(int*) px=malloc(sizeof(*p));
+    if(px==NULL)
+        return;
 }
 
-long add_long_long(long a,long b)
-{
-    return a+b;
-}
-
-long add_int_long(int a,long b)
-{
-    return a+b;
-}
-
-long add_long_int(long a,int b)
-{
-    return a+b;
-}
-
-#define add(x1,x2) _Generic(x1,int: _Generic(x2,int:add_int_int,long:add_int_long),\
-                               long:_Generic(x2,int:add_long_int,long:add_long_long))(x1,x2)
-
+//void test_
+static pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 int main()
 {
-    int a[10];
-    RAII_MEM(int*) p=malloc(sizeof(*p));
-
-    RAII_MEM(int*) px=malloc(sizeof(*p));
+    test_raiimem();
+    int a[10] = {3,1,2};
     printf("%d\n",is_builtin_array(1));;
     mutex_guard guard=make_mutex_guard(&mutex);
     printf("%d\n",type_is_same(1,int()));
@@ -48,9 +33,37 @@ int main()
     swap(&x,&y);
     assert_return(1==1,0,printf("111 \n"));
     attr_unused typeof(a) *pa=&a;
-    printf("%d\n",type_is_integral(struct{int x;}));
+    printf("%d\n",type_is_numeric(struct{int x;}));
     tuple(int,double,char) tuple = {1,2,3};
     printf("%d %lf %d\n",tuple._0,tuple_get(tuple,1),tuple_get(tuple,2));
     RAII_FILE(fclose) fp=fopen("main.c","r");
-    printf("max=%d",integral_min(1U,2U));
+    printf("max=%d\n",numeric_min(1U,2U));
+    vector(int) vv={},vy={};
+    vector_assign(&vv,&vy);
+    //vector_pop_back(&vv);
+    //assert_return(1,0);
+    printf("%d\n",numeric_clame(20,0,10));
+    //numeric_rsort(a,3);
+    numeric_right_rotate(a,3,10);
+    printf("[%d %d %d]\n",a[0],a[1],a[2]);
+    //return 0;
+    printf("%d\n",numeric_nth(((int[]){3,1,2,4,5}),5,1));
+    {
+        time_spend_guard start=make_time_spend(0);
+        int len=10000000;
+        RAII_MEM(int*) p=malloc(sizeof(*p)*len);
+        for(int i=0;i<len;i++)
+            p[i]=1;
+        printf("nth=%d\n",numeric_nth(p,len,len/2));
+    }
+
+    {
+        time_spend_guard start=make_time_spend("fuck");
+        int len=10000000;
+        RAII_MEM(int*) p=malloc(sizeof(*p)*len);
+        for(int i=0;i<len;i++)
+            p[i]=1;
+        numeric_sort(p,len);
+        printf("nth=%d\n",p[len/2]);
+    }
 }

@@ -13,6 +13,7 @@
 static inline void cleanup_mem_like_free(void *p)
 {
     free(*(void**)p);
+    fprintf(stderr,"auto free memory %p\n",p);
 }
 
 #define RAII_MEM(type) RAII(type, cleanup_mem_like_free)

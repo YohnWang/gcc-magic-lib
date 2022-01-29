@@ -1,6 +1,6 @@
 // This file is from https://github.com/YohnWang/gcc-magic-lib
-#ifndef GML_EXMACRO_H
-#define GML_EXMACRO_H
+#ifndef GML_MACRO_KIT_H
+#define GML_MACRO_KIT_H
 
 #include<stdint.h>
 #include<stdbool.h>
@@ -98,15 +98,50 @@
 #define type_is_signed(T) (_Generic((typeof(T)){0},signed char:1,short:1,int:1,long:1,long long:1,default:0))
 #define type_is_unsigned(T) (_Generic((typeof(T)){0},unsigned char:1,unsigned short:1,unsigned int:1,unsigned long:1,unsigned long long:1,default:0))
 #define type_is_same_sign(T1,T2) (type_is_signed(T1)==type_is_signed(T2))
+#define type_is_numeric(T) (_Generic((typeof(T)){0},signed char:1,unsigned char:1,short:1,unsigned short:1,int:1,unsigned int:1,long:1,unsigned long:1,long long:1,unsigned long long:1,float:1,double:1,long double:1,default:0))
 
 // static assert
 #define static_assert_is_builtin_array(a) ({_Static_assert(is_builtin_array(a),"not an array");is_builtin_array(a);})
 #define static_assert_type_is_same_0(T1,T2) _Static_assert(type_is_same(T1,T2),"type is not same")
 #define static_assert_type_is_same_1(T1,T2,errstr) _Static_assert(type_is_same(T1,T2),errstr)
 #define static_assert_type_is_same(T1,T2,...) macro_cat(static_assert_type_is_same_,count_macro_args(__VA_ARGS__))(T1,T2,##__VA_ARGS__)
+#define static_assert_type_is_numeric(T) _Static_assert(type_is_numeric(T),"type is not numeric")
 
 #define is_constexpr(expr) (__builtin_constant_p(expr))
 #define make_constint(expr) (sizeof(struct{int t;char x[expr];}) != sizeof(int))
 #define static_chose_expr(const_expr,expr1,expr2) (__builtin_choose_expr(make_constint(const_expr),expr1,expr2))
 
+// expression repeat
+#define expression_repeat(times,...) macro_cat(expression_repeat_,times)(__VA_ARGS__)
+#define expression_repeat_1(...)  __VA_ARGS__
+#define expression_repeat_2(...)  expression_repeat_1(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_3(...)  expression_repeat_2(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_4(...)  expression_repeat_3(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_5(...)  expression_repeat_4(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_6(...)  expression_repeat_5(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_7(...)  expression_repeat_6(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_8(...)  expression_repeat_7(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_9(...)  expression_repeat_8(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_10(...) expression_repeat_9(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_11(...) expression_repeat_10(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_12(...) expression_repeat_11(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_13(...) expression_repeat_12(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_14(...) expression_repeat_13(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_15(...) expression_repeat_14(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_16(...) expression_repeat_15(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_17(...) expression_repeat_16(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_18(...) expression_repeat_17(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_19(...) expression_repeat_18(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_20(...) expression_repeat_19(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_21(...) expression_repeat_20(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_22(...) expression_repeat_21(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_23(...) expression_repeat_22(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_24(...) expression_repeat_23(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_25(...) expression_repeat_24(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_26(...) expression_repeat_25(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_27(...) expression_repeat_26(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_28(...) expression_repeat_27(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_29(...) expression_repeat_28(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_30(...) expression_repeat_29(__VA_ARGS__) __VA_ARGS__
+#define expression_repeat_31(...) expression_repeat_30(__VA_ARGS__) __VA_ARGS__
 #endif
