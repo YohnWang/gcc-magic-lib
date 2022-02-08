@@ -1,4 +1,4 @@
-srcs=$(wildcard *.c)
+srcs=main.c
 objs=$(srcs:%.c=%.o)
 cflags = -O3 -Wall -Wextra -I .
 ldflags = -lpthread

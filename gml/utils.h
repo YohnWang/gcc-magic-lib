@@ -15,33 +15,96 @@
         __auto_type t=*x;\
         *x=*y;\
         *y=t;\
-    };\
+    }\
     swap_helper(a,b);\
 })
 
-typedef struct time_spend_t
-{
-    int64_t start;
-    const char *fmt;
-}time_spend_t;
+#define array_copy(dst,src,len) \
+({\
+    typedef typeof(dst[0]) T1;\
+    typedef typeof(src[0]) T2;\
+    static_assert_type_is_equal(T1,T2);\
+    void array_copy_helper(T1 *d,const T1 *s,size_t n)\
+    {\
+        size_t i=0;\
+        while(i<n&&((n-i)&7)!=0) {d[i]=s[i];i++;}\
+        while(i+7<n)\
+        {\
+            expression_repeat(8,d[i]=s[i];i++;)\
+        }\
+    }\
+    array_copy_helper(dst,src,len);\
+})
 
-static void _time_spend_print(time_spend_t *time_spend)
-{
-    struct timespec t = {0};
-    clock_gettime(CLOCK_MONOTONIC, &t);
-    int64_t tns=t.tv_nsec+t.tv_sec*1000000000;
-    const char *fmt=time_spend->fmt?time_spend->fmt:"";
-    fprintf(stdout,"\e[31m""%s:speed %gms\n""\e[0m",fmt,(tns-time_spend->start)/1000000.0);
-}
+#define array_fill(arr,len,elem) \
+({\
+    typedef typeof(arr) arr_t;\
+    typedef typeof(arr[0]) elem_t;\
+    void array_fill_helper(arr_t a,size_t n,elem_t x)\
+    {\
+        size_t i=0;\
+        while(i<n&&(n-i)&7!=0) a[i++]=x;\
+        while(i+7<n)\
+        {\
+            expression_repeat(8,a[i++]=x;)\
+        }\
+    }\
+    array_fill_helper(arr,len,elem);\
+})
 
-static time_spend_t make_time_spend_1(const char *fmt)
-{
-    struct timespec t = {0};
-    clock_gettime(CLOCK_MONOTONIC, &t);
-    return (time_spend_t){.start=t.tv_nsec+t.tv_sec*1000000000,.fmt=fmt};
-}
+#define array_reverse(array,len) \
+({\
+    __auto_type arr=array;\
+    inline void reverse_helper(typeof(arr) a,size_t n) \
+    {\
+        for(size_t i=0,j=n-1;i<j;i++,j--)\
+            swap(&a[i],&a[j]);\
+    }\
+    reverse_helper(arr,len);\
+})
 
-#define time_spend_guard RAII(time_spend_t,_time_spend_print)
-#define make_time_spend(...) macro_cat(make_time_spend_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
-#define make_time_spend_0(...)  make_time_spend_1(NULL)
+#define array_left_rotate(array,len,k) \
+({\
+    __auto_type arr=array;\
+    __auto_type length=len;\
+    __auto_type shift=k;\
+    static_assert_type_is_numeric(arr[0]);\
+    void left_rotate_helper(typeof(arr) a,size_t n,size_t p) \
+    {\
+        array_reverse(a,p);\
+        array_reverse(a+p,n-p);\
+        array_reverse(a,n);\
+    }\
+    left_rotate_helper(arr,length,(shift>=0?shift:-shift)%length);\
+})
+
+#define array_right_rotate(array,len,k) \
+({\
+    array_left_rotate(array,len,(len-k));\
+})
+
+#define array_remove(array,len,index) \
+({\
+    typedef typeof(array) arr_t;\
+    inline void remove(arr_t a,size_t n,size_t k)\
+    {\
+        for(size_t i=k;i<n-1;i++)\
+            a[i]=a[i+1];\
+    }\
+    remove(array,len,index);\
+})
+
+#define array_insert(array,len,index,target) \
+({\
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    inline void insert(arr_t a,size_t n,size_t k,elem_t x)\
+    {\
+        for(size_t i=n-1;i>=k;i--)\
+            a[i+1]=a[i];\
+        a[k]=x;\
+    }\
+    insert(array,len,index,target);\
+})
+
 #endif

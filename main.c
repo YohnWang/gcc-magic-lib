@@ -6,7 +6,12 @@ tuple_def(int,double,char)
 
 void test_exmacro()
 {
-
+    // if(1)
+    // {
+    //     ...
+    //     ...
+    //     return;
+    // }
 }
 
 void test_raiimem()
@@ -42,28 +47,32 @@ int main()
     vector_assign(&vv,&vy);
     //vector_pop_back(&vv);
     //assert_return(1,0);
-    printf("%d\n",numeric_clame(20,0,10));
+    printf("%d\n",-2%5);
     //numeric_rsort(a,3);
-    numeric_right_rotate(a,3,10);
+    array_right_rotate(a,3,-1);
     printf("[%d %d %d]\n",a[0],a[1],a[2]);
     //return 0;
-    printf("%d\n",numeric_nth(((int[]){3,1,2,4,5}),5,1));
+    printf("%zd\n",numeric_array_search(((int[]){3,1,2,4,5}),5,3));
     {
-        time_spend_guard start=make_time_spend(0);
-        int len=10000000;
+        int len=100000000;
         RAII_MEM(int*) p=malloc(sizeof(*p)*len);
         for(int i=0;i<len;i++)
-            p[i]=1;
-        printf("nth=%d\n",numeric_nth(p,len,len/2));
+            p[i]=i;
+        time_spend_guard start=make_time_spend(0);
+        printf("nth=%d\n",numeric_array_nth(p,len,len/2));
     }
 
     {
-        time_spend_guard start=make_time_spend("fuck");
-        int len=10000000;
+        int len=100000000;
         RAII_MEM(int*) p=malloc(sizeof(*p)*len);
         for(int i=0;i<len;i++)
             p[i]=1;
-        numeric_sort(p,len);
+        time_spend_guard start=make_time_spend("fuck");
+        numeric_array_sort(p,len);
         printf("nth=%d\n",p[len/2]);
     }
+    int arr_copy[10];
+    array_copy(arr_copy,((const int[]){1,2,3}),3);
+    printf("[%d %d %d]\n",arr_copy[0],arr_copy[1],arr_copy[2]);
+    printf("%d\n",_Generic((const int){0},int:1,default:0));
 }

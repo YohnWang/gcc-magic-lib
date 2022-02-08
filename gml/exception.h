@@ -12,4 +12,6 @@
 
 #define assert_return(...) macro_cat(assert_return_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 
+#define assert_try(condition) if() 
+
 #endif

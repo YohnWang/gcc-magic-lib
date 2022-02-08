@@ -24,12 +24,20 @@
 
 #define numeric_mid(a,b,c) numeric_min(numeric_max(a,b),numeric_max(b,c))
 
-#define numeric_sort(array,len) \
+#define narray_sort numeric_array_sort
+#define narray_rsort numeric_array_rsort
+#define narray_search numeric_array_search
+#define narray_bsearch numeric_array_bsearch
+#define narray_nth numeric_array_nth
+#define narray_max numeric_array_max_element
+#define narray_min numeric_array_min_element
+
+#define numeric_array_sort(array,len) \
 ({\
     __auto_type arr=array;\
     static_assert_type_is_numeric(arr[0]);\
     typedef typeof(arr[0]) elem_type;\
-    inline int cmp(const void *x,const void *y)\
+    int cmp(const void *x,const void *y)\
     {\
         return *(elem_type*)x-*(elem_type*)y;\
     }\
@@ -40,7 +48,7 @@
     numeric_sort_helper(arr,len);\
 })
 
-#define numeric_rsort(array,len) \
+#define numeric_array_rsort(array,len) \
 ({\
     __auto_type arr=array;\
     static_assert_type_is_numeric(arr[0]);\
@@ -56,63 +64,103 @@
     numeric_rsort_helper(arr,len);\
 })
 
-#define numeric_nth(array,len,nth) \
+#define numeric_array_search(array,len,target) \
+({\
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    size_t search(arr_t a,size_t n,elem_t x)\
+    {\
+        for(size_t i=0;i<n;i++)\
+        {\
+            if(x==a[i]) return i;\
+        }\
+        return n;\
+    }\
+    search(array,len,target);\
+})
+
+#define numeric_array_bsearch(array,len,target) \
+({\
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    size_t search(arr_t a,size_t n,elem_t x)\
+    {\
+        size_t begin=0,end=n-1;\
+        while(begin<=end)\
+        {\
+            size_t center=begin+(end-begin)/2;\
+            if(x<a[center]) end=center-1;\
+            else if(x>a[center]) begin=center+1;\
+            else return center;\
+        }\
+        return n;\
+    }\
+    search(array,len,target);\
+})
+
+#define numeric_array_nth(array,len,nth) \
 ({\
     __auto_type arr=array;\
     static_assert_type_is_numeric(arr[0]);\
     typedef typeof(arr[0]) elem_type;\
     size_t k=nth;\
-    void quick_sort_helper(typeof(arr) a,size_t begin,size_t end)\
+    void quick_select_helper(typeof(arr) a,size_t begin,size_t end)\
     {\
-        size_t mid=(end-begin)/2;\
-        if(a[begin]<a[mid]) swap(&a[begin],&a[mid]);\
-        if(a[end]<a[mid]) swap(&a[end],&a[mid]);\
-        elem_type pivot=a[begin];\
-        size_t i=begin,j=end+1;\
-        while(i<j)\
+        while(true)\
         {\
-            while(i<end&&a[++i]<pivot){}\
-            while(a[--j]>pivot){}\
-            if(i<j) swap(&a[i],&a[j]);\
+            size_t mid=(end-begin)/2;\
+            if(a[begin]<a[mid]) swap(&a[begin],&a[mid]);\
+            if(a[end]<a[mid]) swap(&a[end],&a[mid]);\
+            elem_type pivot=a[begin];\
+            size_t i=begin,j=end+1;\
+            while(i<j)\
+            {\
+                while(i<end&&a[++i]<pivot){}\
+                while(a[--j]>pivot){}\
+                if(i<j) swap(&a[i],&a[j]);\
+            }\
+            swap(&a[begin],&a[j]);\
+            if(k<j) end=j-1;\
+            else if(k>j) begin=j+1;\
+            else return;\
         }\
-        swap(&a[begin],&a[j]);\
-        if(k<j) quick_sort_helper(a,begin,j-1);\
-        else if(k>j) quick_sort_helper(a,j+1,end);\
-        else return;\
     }\
-    quick_sort_helper(arr,0,(len)-1);\
+    quick_select_helper(arr,0,(len)-1);\
     arr[k];\
 })
 
-#define numeric_reverse(array,len) \
+#define numeric_array_max_element(array,len) \
 ({\
-    __auto_type arr=array;\
-    static_assert_type_is_numeric(arr[0]);\
-    void reverse_helper(typeof(arr) a,size_t n) \
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    elem_t max_element_helper(arr_t a,size_t n)\
     {\
-        for(size_t i=0,j=n-1;i<j;i++,j--)\
-            swap(&a[i],&a[j]);\
+        elem_t max_elem=a[0];\
+        for(size_t i=1;i<n;i++)\
+        {\
+            if(max_elem<a[i])\
+                max_elem=a[i];\
+        }\
+        return max_elem;\
     }\
-    reverse_helper(arr,len);\
+    max_element_helper(array,len);\
 })
 
-#define numeric_left_rotate(array,len,k) \
+#define numeric_array_min_element(array,len) \
 ({\
-    __auto_type arr=array;\
-    __auto_type length=len;\
-    static_assert_type_is_numeric(arr[0]);\
-    void left_rotate_helper(typeof(arr) a,size_t n,size_t p) \
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    elem_t min_element_helper(arr_t a,size_t n)\
     {\
-        numeric_reverse(a,p);\
-        numeric_reverse(a+p,n-p);\
-        numeric_reverse(a,n);\
+        elem_t min_elem=a[0];\
+        for(size_t i=1;i<n;i++)\
+        {\
+            if(min_elem>a[i])\
+                min_elem=a[i];\
+        }\
+        return min_elem;\
     }\
-    left_rotate_helper(arr,length,(k)%length);\
-})
-
-#define numeric_right_rotate(array,len,k) \
-({\
-    numeric_left_rotate(array,len,(len-k));\
+    min_element_helper(array,len);\
 })
 
 // helper
@@ -121,8 +169,8 @@
 ({\
     __auto_type _a = (a); \
     __auto_type _b = (b); \
-    _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not integer");\
-    _Static_assert(type_is_same_sign(_a,_b),"integer sign are not same");\
+    _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not numeric");\
+    _Static_assert(type_is_same_sign(_a,_b),"numeric sign are not same");\
     _a > _b ? _a : _b; \
 })
 
@@ -131,7 +179,7 @@
     __auto_type _a = (a); \
     __auto_type _b = (b); \
     _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not integer");\
-    _Static_assert(type_is_same_sign(_a,_b),"integer sign are not same");\
+    _Static_assert(type_is_same_sign(_a,_b),"numeric sign are not same");\
     _a < _b ? _a : _b; \
 })
 
@@ -184,6 +232,5 @@
 #define numeric_min_24(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x) numeric_min_2(numeric_min_23(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w),x)
 #define numeric_min_25(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y) numeric_min_2(numeric_min_24(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x),y)
 #define numeric_min_26(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z) numeric_min_2(numeric_min_25(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y),z)
-
 
 #endif
