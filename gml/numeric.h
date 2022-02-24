@@ -2,6 +2,7 @@
 #ifndef GML_NUMERIC_H
 #define GML_NUMERIC_H
 
+#include<stdbool.h>
 #include<stdlib.h>
 #include"utils.h"
 
@@ -161,6 +162,25 @@
         return min_elem;\
     }\
     min_element_helper(array,len);\
+})
+
+#define numeric_array_equal(array1,len1,array2,len2) \
+({\
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    static_assert_type_is_numeric(elem_t);\
+    bool equal(arr_t a1,size_t n1,arr_t a2,size_t n2)\
+    {\
+        if(n1!=n2)\
+            return false;\
+        for(size_t i=0;i<n1;i++)\
+        {\
+            if(a1[i]!=a2[i])\
+                return false;\
+        }\
+        return true;\
+    }\
+    equal(array1,len1,array2,len2);\
 })
 
 // helper

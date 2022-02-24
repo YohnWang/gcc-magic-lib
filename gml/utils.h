@@ -2,7 +2,6 @@
 #ifndef GML_UTILS_H
 #define GML_UTILS_H
 
-#include<time.h>
 #include<stdint.h>
 #include<stddef.h>
 
@@ -27,7 +26,7 @@
     void array_copy_helper(T1 *d,const T1 *s,size_t n)\
     {\
         size_t i=0;\
-        while(i<n&&((n-i)&7)!=0) {d[i]=s[i];i++;}\
+        while(((n-i)&7)!=0) {d[i]=s[i];i++;}\
         while(i+7<n)\
         {\
             expression_repeat(8,d[i]=s[i];i++;)\
@@ -43,7 +42,7 @@
     void array_fill_helper(arr_t a,size_t n,elem_t x)\
     {\
         size_t i=0;\
-        while(i<n&&(n-i)&7!=0) a[i++]=x;\
+        while((n-i)&7!=0) a[i++]=x;\
         while(i+7<n)\
         {\
             expression_repeat(8,a[i++]=x;)\
@@ -57,6 +56,7 @@
     __auto_type arr=array;\
     inline void reverse_helper(typeof(arr) a,size_t n) \
     {\
+        if(n==0) return;\
         for(size_t i=0,j=n-1;i<j;i++,j--)\
             swap(&a[i],&a[j]);\
     }\
@@ -93,6 +93,8 @@
     }\
     remove(array,len,index);\
 })
+
+#define array_erase array_remove
 
 #define array_insert(array,len,index,target) \
 ({\

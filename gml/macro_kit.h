@@ -82,6 +82,7 @@
 #define macro_cat_64(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21,a22,a23,a24,a25,a26,a27,a28,a29,a30,a31,a32,a33,a34,a35,a36,a37,a38,a39,a40,a41,a42,a43,a44,a45,a46,a47,a48,a49,a50,a51,a52,a53,a54,a55,a56,a57,a58,a59,a60,a61,a62,a63,a64) macro_cat_2(macro_cat_63(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21,a22,a23,a24,a25,a26,a27,a28,a29,a30,a31,a32,a33,a34,a35,a36,a37,a38,a39,a40,a41,a42,a43,a44,a45,a46,a47,a48,a49,a50,a51,a52,a53,a54,a55,a56,a57,a58,a59,a60,a61,a62,a63),a64)
 
 #define macro_cat(...) macro_cat_base(macro_cat_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+#define maccat macro_cat
 
 // make macro argument to string
 #define macro_tostr(...) _macro_tostr_helper(__VA_ARGS__)
@@ -113,7 +114,7 @@
 
 
 // expression repeat
-#define expression_repeat(times,...) {macro_cat(expression_repeat_,times)(__VA_ARGS__)}
+#define expression_repeat(times,...) macro_cat(expression_repeat_,times)(__VA_ARGS__)
 #define expression_repeat_1(...)  __VA_ARGS__
 #define expression_repeat_2(...)  expression_repeat_1(__VA_ARGS__) __VA_ARGS__
 #define expression_repeat_3(...)  expression_repeat_2(__VA_ARGS__) __VA_ARGS__
