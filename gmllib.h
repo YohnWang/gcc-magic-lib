@@ -10,6 +10,7 @@
 #include"gml/exception.h"
 #include"gml/tuple.h"
 #include"gml/vector.h"
+#include"gml/stack.h"
 #include"gml/test_kit.h"
 
 #endif
