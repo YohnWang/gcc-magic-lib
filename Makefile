@@ -6,6 +6,12 @@ ldflags = -lpthread
 all: main.exe
 	./main.exe
 
+bgn: bgn.exe
+	./bgn.exe | grep -o "2824229407960347874293421578024535518477494926091224850578918086542"
+
+bgn.exe: test/bgn_boost.o
+	gcc $^ -o $@ $(ldflags)
+
 main.exe: main.o
 	gcc $^ -o $@ $(ldflags)
 

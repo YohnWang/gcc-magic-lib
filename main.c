@@ -6,12 +6,7 @@ tuple_def(int,double,char)
 
 void test_exmacro()
 {
-    // if(1)
-    // {
-    //     ...
-    //     ...
-    //     return;
-    // }
+
 }
 
 void test_raiimem()
@@ -24,7 +19,8 @@ void test_raiimem()
         return;
 }
 
-//void test_
+stack_def(int)
+
 static pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 int main()
 {
@@ -36,7 +32,7 @@ int main()
     printf("%d\n",count_macro_args());
     int x=1,y=2;
     swap(&x,&y);
-    assert_return(1==1,0,printf("111 \n"));
+
     attr_unused typeof(a) *pa=&a;
     printf("%d\n",type_is_numeric(struct{int x;}));
     tuple(int,double,char) tuple = {1,2,3};
@@ -44,6 +40,7 @@ int main()
     RAII_FILE(fclose) fp=fopen("main.c","r");
     printf("max=%d\n",numeric_min(1U,2U));
     vector(int) vv={},vy={};
+    int vector;
     vector_assign(&vv,&vy);
     //vector_pop_back(&vv);
     //assert_return(1,0);
@@ -75,4 +72,15 @@ int main()
     array_copy(arr_copy,((const int[]){1,2,3}),3);
     printf("[%d %d %d]\n",arr_copy[0],arr_copy[1],arr_copy[2]);
     printf("%d\n",_Generic((const int){0},int:1,default:0));
+    printf("%s",expression_repeat(8,"fuck you\n"));
+    stack_raii stack(int) s={};
+    stack_push(&s,1);
+    stack_push(&s,2);
+    stack_push(&s,3);
+
+    while(!stack_empty(&s))
+    {
+        printf("top=%d\n",stack_top(&s));
+        stack_pop(&s);
+    }
 }
