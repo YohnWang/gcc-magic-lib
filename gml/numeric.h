@@ -183,6 +183,24 @@
     equal(array1,len1,array2,len2);\
 })
 
+#define numeric_next_permutation(array,length) \
+({\
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    static_assert_type_is_numeric(elem_t);\
+    bool next_permutation(arr_t a,size_t n)\
+    {\
+        size_t i,j;\
+        for(i=n-1;i>0 && a[i]<=a[i-1];i--){}\
+        if(i==0) return false;\
+        for(j=n-1;j>i && a[j]<=a[i-1];j--){}\
+        swap(&a[i-1],&a[j]);\
+        array_reverse(a+i,n-i);\
+        return true;\
+    }\
+    next_permutation(array,length);\
+})
+
 // helper
 
 #define numeric_max_2(a,b) \
