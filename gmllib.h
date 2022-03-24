@@ -12,5 +12,6 @@
 #include"gml/vector.h"
 #include"gml/stack.h"
 #include"gml/test_kit.h"
+#include"gml/string.h"
 
 #endif

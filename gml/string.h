@@ -45,12 +45,20 @@ static inline char* vstring_data(vstring *vs)
     return "";
 }
 
-static inline void vstring_init(vstring *vs,const char *s)
+#define vstring_init(vs1,vs2) _Generic(vs2,char*:vstring_init_builtin_string,const char*:vstring_init_builtin_string,default:vstring_init_vstring)(vs1,vs2)
+
+static inline void vstring_init_builtin_string(vstring *vs,const char *s)
 {
     vector_clear(vs);
     for(size_t i=0;s[i]!='\0';i++)
         vector_push_back(vs,s[i]);
     vector_push_back(vs,'\0');
+}
+
+static inline void vstring_init_vstring(vstring *vs,vstring *vs2)
+{
+    vector_clear(vs);
+    vector_assign(vs,vs2);
 }
 
 static inline void vstring_split(vstring *vs,char *sp,vector(vstring) *v)
