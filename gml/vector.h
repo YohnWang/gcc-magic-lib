@@ -75,7 +75,7 @@ static inline void vector_del(void *vptr)
     inline void vector_pop_back_helper(vector_type_t *v)\
     {\
         if(!vector_empty(v)) v->size--;\
-        else vector_error("vector is empty");\
+        else vector_error("vector is empty\n");\
     }\
     vector_pop_back_helper(vptr);\
 })
@@ -279,8 +279,8 @@ static inline void vector_del(void *vptr)
     vector_local_typedef(vptr)\
     inline int vector_alloc_back_helper(vector_type_t *v)\
     {\
-        ssize_t size=vector_size(v);\
-        ssize_t capacity=vector_capacity(v);\
+        size_t size=(size_t)vector_size(v);\
+        size_t capacity=(size_t)vector_capacity(v);\
         if(size==capacity&&vector_reserve_throw(v,size+size/2+1)!=0)\
         {\
             vector_error("vector alloc back failed\n");\
