@@ -183,7 +183,15 @@
     equal(array1,len1,array2,len2);\
 })
 
-#define numeric_next_permutation(array,length) \
+#define numeric_next_permutation(...) macro_cat(numeric_next_permutation_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+
+#define numeric_next_permutation_1(array) \
+({\
+    static_assert_is_builtin_array(array);\
+    numeric_next_permutation_2(array,sizeof(array)/sizeof(array[0]));\
+})
+
+#define numeric_next_permutation_2(array,length) \
 ({\
     typedef typeof(array) arr_t;\
     typedef typeof(array[0]) elem_t;\
