@@ -22,8 +22,10 @@
 
 #define numeric_max(...) macro_cat(numeric_max_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 #define numeric_min(...) macro_cat(numeric_min_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
-
 #define numeric_mid(a,b,c) numeric_min(numeric_max(a,b),numeric_max(b,c))
+#define nmax(...) numeric_max(__VA_ARGS__)
+#define nmin(...) numeric_min(__VA_ARGS__)
+#define nmid(a,b,c) numeric_mid(a,b,c)
 
 #define narray_sort numeric_array_sort
 #define narray_rsort numeric_array_rsort
