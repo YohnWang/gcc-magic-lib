@@ -10,13 +10,12 @@
 
 #define RAII(type,cleanup_func) __attribute__((cleanup(cleanup_func))) typeof(type)
 
-static inline void cleanup_mem_like_free(void *p)
+static inline void cleanup_libc_memory_alloc(void *p)
 {
     free(*(void**)p);
-    fprintf(stderr,"auto free memory %p\n",p);
 }
 
-#define RAII_MEM(type) RAII(type, cleanup_mem_like_free)
+#define RAII_MEM(type) RAII(type,cleanup_libc_memory_alloc)
 
 static inline void cleanup_file_with_open(int *pfd)
 {
