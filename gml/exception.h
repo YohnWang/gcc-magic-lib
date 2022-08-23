@@ -26,7 +26,6 @@ _Thread_local jmp_buf * volatile _g_jmp_buf_ptr
 // try block
 #define try \
 {\
-__attribute__((cleanup(recover_exception_context))) jmp_buf *before;\
 _g_jmp_buf_befor=_g_jmp_buf_ptr;\
 jmp_buf buf;\
 _g_jmp_buf_ptr=&buf;\
