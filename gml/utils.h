@@ -4,6 +4,8 @@
 
 #include<stdint.h>
 #include<stddef.h>
+#include"macro_kit.h"
+#include"type_traits.h"
 
 // template<T> void swap(T *a, T *b)
 #define swap(a,b) \
@@ -20,8 +22,8 @@
 
 #define array_copy(dst,src,len) \
 ({\
-    typedef typeof(dst[0]) T1;\
-    typedef typeof(src[0]) T2;\
+    typedef typeof((dst)[0]) T1;\
+    typedef typeof((src)[0]) T2;\
     static_assert_type_is_equal(T1,T2);\
     void array_copy_helper(T1 *d,const T1 *s,size_t n)\
     {\
@@ -35,10 +37,11 @@
     array_copy_helper(dst,src,len);\
 })
 
+
 #define array_fill(arr,len,elem) \
 ({\
     typedef typeof(arr) arr_t;\
-    typedef typeof(arr[0]) elem_t;\
+    typedef typeof((arr)[0]) elem_t;\
     void array_fill_helper(arr_t a,size_t n,elem_t x)\
     {\
         size_t i=0;\
@@ -108,5 +111,16 @@
     }\
     insert(array,len,index,target);\
 })
+
+#define execute_times(times) \
+    static _Thread_local int macro_cat(_exec_times_counter,__LINE__)=0; \
+    for(;macro_cat(_exec_times_counter,__LINE__)<times;macro_cat(_exec_times_counter,__LINE__)++)
+
+#define execute_times_global(times) \
+    static pthread_mutex_t macro_cat(_g_mutex,__LINE__)=PTHREAD_MUTEX_INITIALIZER;\
+    static _Atomic int macro_cat(_exec_times_counter,__LINE__)=0; \
+    for(;({pthread_mutex_lock(&macro_cat(_g_mutex,__LINE__));1;})&&(macro_cat(_exec_times_counter,__LINE__)<times||({pthread_mutex_unlock(&macro_cat(_g_mutex,__LINE__));0;}));macro_cat(_exec_times_counter,__LINE__)++,pthread_mutex_unlock(&macro_cat(_g_mutex,__LINE__)))
+
+#define execute_once execute_times(1)
 
 #endif

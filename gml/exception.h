@@ -42,7 +42,7 @@ recover_exception_context();}\
 ({if(_g_jmp_ret!=0) throw(_g_jmp_ret);})
 
 #define throw(...) macro_function_guide(throw,##__VA_ARGS__)
-#define throw_0() throw_base(error_unknow)
+#define throw_0() throw_base(_g_jmp_ret)
 #define throw_1(x) throw_base(x)
 #define throw_and_print(x,fmt,...) ({fprintf(stderr,fmt,##__VA_ARGS__);throw_base(x);})
 #define throw_and_print_with_function_and_line(x,fmt,...) ({fprintf(stderr,"in %s, line %d: ",__func__,__LINE__);throw_and_print(x,fmt,##__VA_ARGS__);})
@@ -62,7 +62,7 @@ void throw_base(int e);
     if(_g_jmp_buf_ptr==NULL)\
     {\
         fprintf(stderr,"terminate called after throwing error code %d\n",(e));\
-        abort();\
+        terminate();\
     }\
     if(e) longjmp(*_g_jmp_buf_ptr,(e));\
     else longjmp(*_g_jmp_buf_ptr,(error_unknow));\

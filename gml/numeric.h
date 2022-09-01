@@ -20,8 +20,37 @@
     numeric_clame_helper(n,l,r);\
 })
 
-#define numeric_max(...) macro_cat(numeric_max_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
-#define numeric_min(...) macro_cat(numeric_min_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+#include"_numeric_all_diff.inc"
+#define numeric_all_diff(...) macro_function_guide(_g_numeric_all_diff,__VA_ARGS__)
+#define numeric_all_same(...) macro_function_guide(_g_numeric_all_same,__VA_ARGS__)
+#define nall_diff(...) numeric_all_diff(__VA_ARGS__)
+#define nall_same(...) numeric_all_same(__VA_ARGS__)
+
+#define numeric_all_sign_same(...)
+
+#include"_numeric_max.inc"
+#include"_numeric_min.inc"
+
+#define _g_numeric_max_2(a,b) \
+({\
+    __auto_type _a = (a); \
+    __auto_type _b = (b); \
+    _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not numeric");\
+    _Static_assert(type_is_same_sign(_a,_b),"numeric sign are not same");\
+    _a > _b ? _a : _b; \
+})
+
+#define _g_numeric_min_2(a,b) \
+({\
+    __auto_type _a = (a); \
+    __auto_type _b = (b); \
+    _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not integer");\
+    _Static_assert(type_is_same_sign(_a,_b),"numeric sign are not same");\
+    _a < _b ? _a : _b; \
+})
+
+#define numeric_max(...) macro_cat(_g_numeric_max_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+#define numeric_min(...) macro_cat(_g_numeric_min_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 #define numeric_mid(a,b,c) numeric_min(numeric_max(a,b),numeric_max(b,c))
 #define nmax(...) numeric_max(__VA_ARGS__)
 #define nmin(...) numeric_min(__VA_ARGS__)
@@ -210,75 +239,5 @@
     }\
     next_permutation(array,length);\
 })
-
-// helper
-
-#define numeric_max_2(a,b) \
-({\
-    __auto_type _a = (a); \
-    __auto_type _b = (b); \
-    _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not numeric");\
-    _Static_assert(type_is_same_sign(_a,_b),"numeric sign are not same");\
-    _a > _b ? _a : _b; \
-})
-
-#define numeric_min_2(a,b) \
-({\
-    __auto_type _a = (a); \
-    __auto_type _b = (b); \
-    _Static_assert(type_is_numeric(_a)&&type_is_numeric(_b),"args are not integer");\
-    _Static_assert(type_is_same_sign(_a,_b),"numeric sign are not same");\
-    _a < _b ? _a : _b; \
-})
-
-#define numeric_max_3(a,b,c) numeric_max_2(numeric_max_2(a,b),c)
-#define numeric_max_4(a,b,c,d) numeric_max_2(numeric_max_3(a,b,c),d)
-#define numeric_max_5(a,b,c,d,e) numeric_max_2(numeric_max_4(a,b,c,d),e)
-#define numeric_max_6(a,b,c,d,e,f) numeric_max_2(numeric_max_5(a,b,c,d,e),f)
-#define numeric_max_7(a,b,c,d,e,f,g) numeric_max_2(numeric_max_6(a,b,c,d,e,f),g)
-#define numeric_max_8(a,b,c,d,e,f,g,h) numeric_max_2(numeric_max_7(a,b,c,d,e,f,g),h)
-#define numeric_max_9(a,b,c,d,e,f,g,h,i) numeric_max_2(numeric_max_8(a,b,c,d,e,f,g,h),i)
-#define numeric_max_10(a,b,c,d,e,f,g,h,i,j) numeric_max_2(numeric_max_9(a,b,c,d,e,f,g,h,i),j)
-#define numeric_max_11(a,b,c,d,e,f,g,h,i,j,k) numeric_max_2(numeric_max_10(a,b,c,d,e,f,g,h,i,j),k)
-#define numeric_max_12(a,b,c,d,e,f,g,h,i,j,k,l) numeric_max_2(numeric_max_11(a,b,c,d,e,f,g,h,i,j,k),l)
-#define numeric_max_13(a,b,c,d,e,f,g,h,i,j,k,l,m) numeric_max_2(numeric_max_12(a,b,c,d,e,f,g,h,i,j,k,l),m)
-#define numeric_max_14(a,b,c,d,e,f,g,h,i,j,k,l,m,n) numeric_max_2(numeric_max_13(a,b,c,d,e,f,g,h,i,j,k,l,m),n)
-#define numeric_max_15(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o) numeric_max_2(numeric_max_14(a,b,c,d,e,f,g,h,i,j,k,l,m,n),o)
-#define numeric_max_16(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p) numeric_max_2(numeric_max_15(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o),p)
-#define numeric_max_17(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q) numeric_max_2(numeric_max_16(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p),q)
-#define numeric_max_18(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r) numeric_max_2(numeric_max_17(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q),r)
-#define numeric_max_19(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s) numeric_max_2(numeric_max_18(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r),s)
-#define numeric_max_20(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t) numeric_max_2(numeric_max_19(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s),t)
-#define numeric_max_21(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u) numeric_max_2(numeric_max_20(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t),u)
-#define numeric_max_22(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v) numeric_max_2(numeric_max_21(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u),v)
-#define numeric_max_23(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w) numeric_max_2(numeric_max_22(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v),w)
-#define numeric_max_24(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x) numeric_max_2(numeric_max_23(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w),x)
-#define numeric_max_25(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y) numeric_max_2(numeric_max_24(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x),y)
-#define numeric_max_26(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z) numeric_max_2(numeric_max_25(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y),z)
-
-#define numeric_min_3(a,b,c) numeric_min_2(numeric_min_2(a,b),c)
-#define numeric_min_4(a,b,c,d) numeric_min_2(numeric_min_3(a,b,c),d)
-#define numeric_min_5(a,b,c,d,e) numeric_min_2(numeric_min_4(a,b,c,d),e)
-#define numeric_min_6(a,b,c,d,e,f) numeric_min_2(numeric_min_5(a,b,c,d,e),f)
-#define numeric_min_7(a,b,c,d,e,f,g) numeric_min_2(numeric_min_6(a,b,c,d,e,f),g)
-#define numeric_min_8(a,b,c,d,e,f,g,h) numeric_min_2(numeric_min_7(a,b,c,d,e,f,g),h)
-#define numeric_min_9(a,b,c,d,e,f,g,h,i) numeric_min_2(numeric_min_8(a,b,c,d,e,f,g,h),i)
-#define numeric_min_10(a,b,c,d,e,f,g,h,i,j) numeric_min_2(numeric_min_9(a,b,c,d,e,f,g,h,i),j)
-#define numeric_min_11(a,b,c,d,e,f,g,h,i,j,k) numeric_min_2(numeric_min_10(a,b,c,d,e,f,g,h,i,j),k)
-#define numeric_min_12(a,b,c,d,e,f,g,h,i,j,k,l) numeric_min_2(numeric_min_11(a,b,c,d,e,f,g,h,i,j,k),l)
-#define numeric_min_13(a,b,c,d,e,f,g,h,i,j,k,l,m) numeric_min_2(numeric_min_12(a,b,c,d,e,f,g,h,i,j,k,l),m)
-#define numeric_min_14(a,b,c,d,e,f,g,h,i,j,k,l,m,n) numeric_min_2(numeric_min_13(a,b,c,d,e,f,g,h,i,j,k,l,m),n)
-#define numeric_min_15(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o) numeric_min_2(numeric_min_14(a,b,c,d,e,f,g,h,i,j,k,l,m,n),o)
-#define numeric_min_16(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p) numeric_min_2(numeric_min_15(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o),p)
-#define numeric_min_17(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q) numeric_min_2(numeric_min_16(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p),q)
-#define numeric_min_18(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r) numeric_min_2(numeric_min_17(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q),r)
-#define numeric_min_19(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s) numeric_min_2(numeric_min_18(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r),s)
-#define numeric_min_20(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t) numeric_min_2(numeric_min_19(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s),t)
-#define numeric_min_21(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u) numeric_min_2(numeric_min_20(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t),u)
-#define numeric_min_22(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v) numeric_min_2(numeric_min_21(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u),v)
-#define numeric_min_23(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w) numeric_min_2(numeric_min_22(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v),w)
-#define numeric_min_24(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x) numeric_min_2(numeric_min_23(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w),x)
-#define numeric_min_25(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y) numeric_min_2(numeric_min_24(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x),y)
-#define numeric_min_26(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z) numeric_min_2(numeric_min_25(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y),z)
 
 #endif

@@ -9,7 +9,7 @@
 
 #define stack_def(type) \
 typedef type macro_cat(stack_,type,_alias);\
-vector_def(macro_cat(stack_,type,_alias))\
+vector_def(macro_cat(stack_,type,_alias));\
 typedef struct stack(type)\
 {\
     vector(macro_cat(stack_,type,_alias)) v;\

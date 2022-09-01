@@ -26,7 +26,7 @@ typedef struct vector(type)\
     ssize_t size;\
     ssize_t capacity;\
     type *a;\
-}vector(type);
+}vector(type)
 
 #define vector_reset(vptr) \
 ({\
@@ -50,9 +50,11 @@ typedef struct vector(type)\
     vector_init_helper(vptr);\
 })
 
+#define make_vector(type) ((vector(type)){0})
+
 static inline void vector_del(void *vptr)
 {
-    vector_def(void)
+    vector_def(void);
     vector(void) *v=vptr;
     if(v->a!=NULL)
         free(v->a);
@@ -119,6 +121,7 @@ static inline void vector_del(void *vptr)
         if(i>=0 && i<vector_size(v))\
             return &v->a[i];\
         vector_error("vector access out of range\n");\
+        throw(1,"vector access out of range\n");\
         return &v->a[0];\
     }\
     vector_at_helper(vptr,index);\
@@ -181,7 +184,7 @@ static inline void vector_del(void *vptr)
         if(p==NULL)\
         {\
             vector_error("vector memory alloc failed\n");\
-            exit(-1);\
+            throw(error_bad_alloc);\
         }\
         v->a=p;\
         v->capacity=new_capacity;\
@@ -213,18 +216,20 @@ static inline void vector_del(void *vptr)
             vector_error("vector resize is lower than 0\n");\
             return -1;\
         }\
-        if(new_size<size)\
+        if(new_size<=size)\
         {\
             v->size=new_size;\
             return 0;\
         }\
-        if(new_size > capacity && !vector_reserve_throw(v,new_size))\
+        if(new_size > capacity && vector_reserve_throw(v,new_size))\
         {\
             vector_error("vector resize alloc memory failed\n");\
             return -1;\
         }\
         ssize_t i=size;\
-        array_fill(vector_data(v)+size,new_size-size,(elem_t){0});\
+        array_fill((vector_data(v)+size),(new_size-size),(elem_t){0});\
+        v->size = new_size;\
+        return 0;\
     }\
     vector_resize_helper(vptr,new_size_in);\
 })
