@@ -112,15 +112,18 @@
     insert(array,len,index,target);\
 })
 
-#define execute_times(times) \
-    static _Thread_local int macro_cat(_exec_times_counter,__LINE__)=0; \
-    for(;macro_cat(_exec_times_counter,__LINE__)<times;macro_cat(_exec_times_counter,__LINE__)++)
+#define execute_times(times) _g_execute_times(times,macro_cat(_g_execute_times_counter_,__COUNTER__))
 
-#define execute_times_global(times) \
-    static pthread_mutex_t macro_cat(_g_mutex,__LINE__)=PTHREAD_MUTEX_INITIALIZER;\
-    static _Atomic int macro_cat(_exec_times_counter,__LINE__)=0; \
-    for(;({pthread_mutex_lock(&macro_cat(_g_mutex,__LINE__));1;})&&(macro_cat(_exec_times_counter,__LINE__)<times||({pthread_mutex_unlock(&macro_cat(_g_mutex,__LINE__));0;}));macro_cat(_exec_times_counter,__LINE__)++,pthread_mutex_unlock(&macro_cat(_g_mutex,__LINE__)))
+#define _g_execute_times(times,counter) \
+    static _Thread_local int counter=0; \
+    for(;(counter)<times;(counter)++)
 
 #define execute_once execute_times(1)
+
+#define execute_less_than(times) _g_execute_less_than(times,macro_cat(_g_execute_less_than_counter_,__COUNTER__))
+
+#define _g_execute_less_than(times,counter) \
+    static _Thread_local int counter=0; \
+    if((counter++)<times)
 
 #endif
