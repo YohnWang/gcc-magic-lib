@@ -18,7 +18,7 @@
 
 #define vector_local_typedef(vptr)\
     attr_unused typedef typeof(*(vptr)) vector_type_t;\
-    attr_unused typedef typeof((vptr)->a[0]) elem_t;
+    attr_unused typedef typeof((vptr)->a[0]) elem_t
 
 #define vector_def(type) \
 typedef struct vector(type)\
@@ -30,7 +30,7 @@ typedef struct vector(type)\
 
 #define vector_reset(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_reset_helper(vector_type_t *v)\
     {\
         v->size=0;\
@@ -42,7 +42,7 @@ typedef struct vector(type)\
 
 #define vector_init(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_init_helper(vector_type_t *v)\
     {\
         vector_reset(v);\
@@ -63,7 +63,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_clear(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_clear_helper(vector_type_t *v)\
     {\
         v->size=0;\
@@ -73,7 +73,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_pop_back(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_pop_back_helper(vector_type_t *v)\
     {\
         if(!vector_empty(v)) v->size--;\
@@ -84,7 +84,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_size(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline ssize_t vector_size_helper(vector_type_t *v)\
     {\
         return v->size;\
@@ -94,7 +94,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_capacity(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline ssize_t vector_capacity_helper(vector_type_t *v)\
     {\
         return v->capacity;\
@@ -104,7 +104,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_empty(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline bool vector_empty_helper(vector_type_t *v)\
     {\
         if(v->size==0) return true;\
@@ -115,7 +115,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_at(vptr,index) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline elem_t* vector_at_helper(vector_type_t *v,ssize_t i)\
     {\
         if(i>=0 && i<vector_size(v))\
@@ -129,7 +129,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_at_const(vptr,index) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline const elem_t* vector_at_const_helper(vector_type_t *v,ssize_t i)\
     {\
         return vector_at(v,i);\
@@ -147,7 +147,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_data(vptr) \
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline elem_t* vector_data_helper(vector_type_t *v)\
     {\
         return v->a;\
@@ -159,7 +159,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_divert(vptr)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline elem_t* vector_divert_helper(vector_type_t *v)\
     {\
         __auto_type ret=v->a;\
@@ -171,7 +171,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_reserve_throw(vptr,new_capacity_in)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline int vector_reserve_helper(vector_type_t *v,ssize_t new_capacity)\
     {\
         ssize_t capacity=vector_capacity(v);\
@@ -195,7 +195,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_reserve(vptr,new_capacity_in)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void reserve(vector_type_t *v,ssize_t new_capacity)\
     {\
         if(vector_reserve_throw(v,new_capacity))\
@@ -206,7 +206,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_resize_throw(vptr,new_size_in)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline int vector_resize_helper(vector_type_t *v,ssize_t new_size)\
     {\
         ssize_t size=vector_size(v);\
@@ -238,7 +238,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_assign(tptr,vptr)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_assign_helper(vector_type_t *t,vector_type_t *v)\
     {\
         if(t==v) return;\
@@ -256,7 +256,7 @@ static inline void vector_del(void *vptr)
 // like c++ move
 #define vector_move(tptr,vptr)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_move_helper(vector_type_t *restrict t,vector_type_t *restrict v)\
     {\
         swap(t,v);\
@@ -266,7 +266,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_shrink_to_fit(vptr)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_shrink_to_fit_helper(vector_type_t *v)\
     {\
         if(v->capacity>v->size)\
@@ -281,7 +281,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_alloc_back(vptr)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline int vector_alloc_back_helper(vector_type_t *v)\
     {\
         size_t size=(size_t)vector_size(v);\
@@ -299,7 +299,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_push_back(vptr,e_in)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_push_back_helper(vector_type_t *v,elem_t e)\
     {\
         ssize_t end_index=vector_size(v);\
@@ -311,7 +311,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_insert(vptr,index_in,e_in)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_insert_helper(vector_type_t *v,ssize_t index,elem_t e)\
     {\
         if(!(index>=0 && index<=vector_size(v)))\
@@ -329,7 +329,7 @@ static inline void vector_del(void *vptr)
 
 #define vector_erase(vptr,index_in)\
 ({\
-    vector_local_typedef(vptr)\
+    vector_local_typedef(vptr);\
     inline void vector_erase_helper(vector_type_t *v,ssize_t index)\
     {\
         if(!vector_empty(v) && !(index>=0 && index<vector_size(v)))\
@@ -342,5 +342,10 @@ static inline void vector_del(void *vptr)
     }\
     vector_erase_helper(vptr,index_in);\
 })
+
+#define vector_find(...) macro_function_guide(_g_vector_find,__VA_ARGS__)
+
+#define _g_vector_find_2(vptr,elem) array_find(vector_data(vptr),vector_size(vptr),elem)
+#define _g_vector_find_3(vptr,elem,eq) array_find(vector_data(vptr),vector_size(vptr),elem,eq)
 
 #endif

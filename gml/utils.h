@@ -20,6 +20,38 @@
     swap_helper(a,b);\
 })
 
+#define array_find(...) macro_cat(_g_array_find_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+
+#define _g_array_find_3(arr,len,elem)\
+({\
+    typedef typeof(arr) arr_t;\
+    typedef typeof((arr)[0]) elem_t;\
+    ssize_t array_find_helper(arr_t a,ssize_t n,elem_t x)\
+    {\
+        for(ssize_t i=0;i<n;i++)\
+        {\
+            if(a[i]==x) return i;\
+        }\
+        return -1;\
+    }\
+    array_find_helper(arr,len,elem);\
+})
+
+#define _g_array_find_4(arr,len,elem,eq)\
+({\
+    typedef typeof(arr) arr_t;\
+    typedef typeof((arr)[0]) elem_t;\
+    ssize_t array_find_helper(arr_t a,ssize_t n,elem_t x)\
+    {\
+        for(ssize_t i=0;i<n;i++)\
+        {\
+            if(eq(&a[i],&x)) return i;\
+        }\
+        return -1;\
+    }\
+    array_find_helper(arr,len,elem);\
+})
+
 #define array_copy(dst,src,len) \
 ({\
     typedef typeof((dst)[0]) T1;\
