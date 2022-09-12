@@ -2,15 +2,27 @@
 
 define_exception_context();
 
-void throw_base(int e)
+void exception_throw(int e)
 {
-    if(_g_jmp_buf_ptr==NULL)
+    if(is_exception_nowhere_can_be_captured())
     {
         fprintf(stderr,"terminate called after throwing error code %d\n",e);
         terminate();
     }
+    if(is_multi_exception_throw())
+    {
+        fprintf(stderr,"terminate called because exception throw when unwinding\n");
+        terminate();
+    }
+    //_g_exception_unwinding=true;
     if(e)
-        longjmp(*_g_jmp_buf_ptr,e);
+        longjmp(current_exception_buf(),e);
+}
+
+void build_exception_context()
+{
+    vector_push_back(&_g_jmp_buf_vector,((exception_context_t){0}));
+    _g_exception_unwinding=false;
 }
 
 void string_init(string *s)

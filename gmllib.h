@@ -14,5 +14,6 @@
 #include"gml/stack.h"
 #include"gml/test_kit.h"
 #include"gml/string.h"
+#include"gml/function.h"
 
 #endif
