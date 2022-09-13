@@ -39,6 +39,7 @@ void exception_throw(int e);
 typedef struct exception_context_t
 {
     jmp_buf buf;
+    jmp_buf *before;
 }exception_context_t;
 
 vector_def(exception_context_t);
@@ -70,7 +71,8 @@ static inline void recover_exception_context()
 
 static inline bool is_exception_nowhere_can_be_captured()
 {
-    return vector_empty(&_g_jmp_buf_vector);
+    //return vector_empty(&_g_jmp_buf_vector);
+    return _g_jmp_buf_ptr==NULL;
 }
 
 static inline bool is_multi_exception_throw()
@@ -78,7 +80,7 @@ static inline bool is_multi_exception_throw()
     return _g_exception_unwinding==true;
 }
 
-#define current_exception_buf() vector_back(&_g_jmp_buf_vector).buf
+#define current_exception_buf() *_g_jmp_buf_ptr//vector_back(&_g_jmp_buf_vector).buf
 
 static inline void unwinding_recover(void *p)
 {
@@ -88,28 +90,40 @@ static inline void unwinding_recover(void *p)
 // try block
 #define try \
 {\
-build_exception_context();\
-if((_g_jmp_ret=setjmp(current_exception_buf()))==0)
+jmp_buf buf;\
+jmp_buf * volatile before=_g_jmp_buf_ptr;\
+_g_jmp_buf_ptr=&buf;\
+if((_g_jmp_ret=setjmp(*_g_jmp_buf_ptr))==0)
+
+// catch block
+#define catch(def) \
+_g_jmp_buf_ptr=before;}\
+for(def = _g_jmp_ret;_g_jmp_ret;_g_jmp_ret=0)
+
 
 typedef void (*unwinding_function_t)();
 vector_def(unwinding_function_t);
 
+static inline void recover_exception_jmp_buf_ptr(jmp_buf **before)
+{
+    _g_jmp_buf_ptr=*before;
+}
 
 #define unwinding() \
 volatile vector(unwinding_function_t) unwinding_table={};\
-build_exception_context();\
-__attribute__((cleanup(unwinding_recover))) struct{} _g_unwinding_flag;\
+jmp_buf _g_buf;\
+__attribute__((cleanup(recover_exception_jmp_buf_ptr))) jmp_buf * volatile _g_before=_g_jmp_buf_ptr;\
+_g_jmp_buf_ptr=&_g_buf;\
 if((_g_jmp_ret=setjmp(current_exception_buf()))!=0)\
 {\
-    _g_exception_unwinding=true;\
+    _g_jmp_buf_ptr=NULL;\
     for(ssize_t i=vector_size(&unwinding_table)-1;i>=0;i--)\
     {\
         vector_ref(&unwinding_table,i)();\
     }\
-    recover_exception_context();\
+    _g_jmp_buf_ptr=_g_before;\
     vector(unwinding_function_t) table=unwinding_table;\
     vector_del(&table);\
-    _g_exception_unwinding=false;\
     throw();\
 }
 
@@ -118,10 +132,7 @@ if((_g_jmp_ret=setjmp(current_exception_buf()))!=0)\
     vector_push_back(&unwinding_table,(void*)fbind(f,__VA_ARGS__));\
 })
 
-// catch block
-#define catch(def) \
-recover_exception_context();}\
-for(def = _g_jmp_ret;_g_jmp_ret;_g_jmp_ret=0)
+
 
 // ignore exception
 #define ignore_exception() \
