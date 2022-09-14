@@ -22,7 +22,9 @@ enum errors
 };
 
 void exception_throw(int e);
+
 #define throw(...) ({/* fprintf(stderr,"in %s, line %d: \n",__func__,__LINE__); */macro_function_guide(throw,##__VA_ARGS__);})
+
 #define throw_0() exception_throw(_g_jmp_ret)
 #define throw_1(x) exception_throw(x)
 #define throw_and_print(x,fmt,...) ({fprintf(stderr,fmt,##__VA_ARGS__);exception_throw(x);})
@@ -36,56 +38,24 @@ void exception_throw(int e);
 
 // exception context
 #include"vector.h"
-typedef struct exception_context_t
-{
-    jmp_buf buf;
-    jmp_buf *before;
-}exception_context_t;
 
-vector_def(exception_context_t);
 extern _Thread_local volatile int _g_jmp_ret;
-extern _Thread_local volatile bool _g_exception_unwinding;
 extern _Thread_local jmp_buf * volatile _g_jmp_buf_ptr;
-extern _Thread_local jmp_buf * volatile _g_jmp_buf_befor;
-extern _Thread_local volatile vector(exception_context_t) _g_jmp_buf_vector;
 
 #define define_exception_context() \
 _Thread_local volatile int _g_jmp_ret;\
-_Thread_local volatile bool _g_exception_unwinding;\
-_Thread_local jmp_buf * volatile _g_jmp_buf_befor=NULL;\
-_Thread_local jmp_buf * volatile _g_jmp_buf_ptr=NULL;\
-_Thread_local volatile vector(exception_context_t) _g_jmp_buf_vector
+_Thread_local jmp_buf * volatile _g_jmp_buf_ptr=NULL
 
 
 // exception context function
 
-extern void build_exception_context();
-
-static inline void recover_exception_context()
-{
-    // printf("%p %p\n",_g_jmp_buf_befor,_g_jmp_buf_ptr);
-    // _g_jmp_buf_ptr=_g_jmp_buf_befor;
-    vector_pop_back(&_g_jmp_buf_vector);
-    _g_exception_unwinding=false;
-}
-
 static inline bool is_exception_nowhere_can_be_captured()
 {
-    //return vector_empty(&_g_jmp_buf_vector);
     return _g_jmp_buf_ptr==NULL;
 }
 
-static inline bool is_multi_exception_throw()
-{
-    return _g_exception_unwinding==true;
-}
+#define current_exception_buf() (*_g_jmp_buf_ptr)
 
-#define current_exception_buf() *_g_jmp_buf_ptr//vector_back(&_g_jmp_buf_vector).buf
-
-static inline void unwinding_recover(void *p)
-{
-    vector_pop_back(&_g_jmp_buf_vector);
-}
 
 // try block
 #define try \
@@ -104,40 +74,60 @@ for(def = _g_jmp_ret;_g_jmp_ret;_g_jmp_ret=0)
 typedef void (*unwinding_function_t)();
 vector_def(unwinding_function_t);
 
-static inline void recover_exception_jmp_buf_ptr(jmp_buf **before)
+static inline void recover_exception_jmp_buf_ptr(jmp_buf *volatile *before)
 {
     _g_jmp_buf_ptr=*before;
 }
 
-#define unwinding() \
-volatile vector(unwinding_function_t) unwinding_table={};\
+static inline void unwinding_distructor_process(volatile unwinding_function_t table[],ssize_t len)
+{
+    for(ssize_t i=len-1;i>=0;i--)
+    {
+        table[i]();
+    }
+}
+
+#define unwinding(...) macro_cat(_g_unwinding_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+#define _g_unwinding_0() _g_unwinding(16)
+#define _g_unwinding_1(size) _g_unwinding(size)
+
+#define _g_unwinding(unwinding_table_size) \
+static_assert_is_constexpr(unwinding_table_size);\
+volatile unwinding_function_t unwinding_table[unwinding_table_size];\
+volatile ssize_t unwinding_table_len=0;\
 jmp_buf _g_buf;\
-__attribute__((cleanup(recover_exception_jmp_buf_ptr))) jmp_buf * volatile _g_before=_g_jmp_buf_ptr;\
+__attribute__((cleanup(recover_exception_jmp_buf_ptr))) \
+jmp_buf * volatile _g_jmp_buf_before=_g_jmp_buf_ptr;\
 _g_jmp_buf_ptr=&_g_buf;\
 if((_g_jmp_ret=setjmp(current_exception_buf()))!=0)\
 {\
     _g_jmp_buf_ptr=NULL;\
-    for(ssize_t i=vector_size(&unwinding_table)-1;i>=0;i--)\
-    {\
-        vector_ref(&unwinding_table,i)();\
-    }\
-    _g_jmp_buf_ptr=_g_before;\
-    vector(unwinding_function_t) table=unwinding_table;\
-    vector_del(&table);\
-    throw();\
+    unwinding_distructor_process(unwinding_table,unwinding_table_len);\
+    _g_jmp_buf_ptr=_g_jmp_buf_before;\
+    throw(_g_jmp_ret);\
 }
 
 #define unwind_push(f,...) \
 ({\
-    vector_push_back(&unwinding_table,(void*)fbind(f,__VA_ARGS__));\
+    unwinding_table[unwinding_table_len++]=(void*)fbind(f,__VA_ARGS__);\
 })
 
 
+// macro NO_GML_EXCEPTION ignore exception
+#ifdef NO_GML_EXCEPTION
+#undef try
+#undef throw
+#undef catch
+#undef unwinding
+#undef unwind_push
 
-// ignore exception
-#define ignore_exception() \
-build_exception_context();\
-if((_g_jmp_ret=setjmp(current_exception_buf()))!=0)\
+#define try if(1)
+#define throw(...) terminate()
+#define catch(...) if(0)
+#define unwinding(...)
+#define unwind_push(...)
+
+#endif
 
 
 #endif
