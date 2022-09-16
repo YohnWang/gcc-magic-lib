@@ -15,5 +15,6 @@
 #include"gml/test_kit.h"
 #include"gml/string.h"
 #include"gml/function.h"
+#include"gml/new.h"
 
 #endif
