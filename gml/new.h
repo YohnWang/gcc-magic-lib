@@ -12,11 +12,13 @@
     p;\
 })
 
-#define _g_new_2(T,e) \
+#include"_new.inc"
+
+#define _g_new_with_init(T,...) \
 ({\
     typeof(T) *p=malloc(sizeof(T));\
     if(p==NULL) throw(error_bad_alloc);\
-    *p=e;\
+    *p=(T){__VA_ARGS__};\
     p;\
 })
 
