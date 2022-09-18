@@ -23,7 +23,7 @@ enum errors
 
 void exception_throw(int e);
 
-#define throw(...) ({/* fprintf(stderr,"in %s, line %d: \n",__func__,__LINE__); */macro_function_guide(throw,##__VA_ARGS__);})
+#define throw(...) ({macro_function_guide(throw,##__VA_ARGS__);})
 
 #define throw_0() exception_throw(_g_jmp_ret)
 #define throw_1(x) exception_throw(x)
@@ -107,7 +107,15 @@ if((_g_jmp_ret=setjmp(current_exception_buf()))!=0)\
     throw(_g_jmp_ret);\
 }
 
-#define unwind_push(f,...) \
+#define unwind_push(...) _g_unwind_push(macro_cat(unwinding_table_len_,__COUNTER__),__VA_ARGS__)
+
+static inline void unwind_table_len_recover_function(volatile ssize_t * volatile *p)
+{
+    (**p)--;
+}
+
+#define _g_unwind_push(mark,f,...) \
+RAII(volatile ssize_t * volatile,unwind_table_len_recover_function) mark=&unwinding_table_len;\
 ({\
     unwinding_table[unwinding_table_len++]=(void*)fbind(f,__VA_ARGS__);\
 })
@@ -123,7 +131,7 @@ if((_g_jmp_ret=setjmp(current_exception_buf()))!=0)\
 
 #define try if(1)
 #define throw(...) terminate()
-#define catch(...) if(0)
+#define catch(...) for(__VA_ARGS__;0;)
 #define unwinding(...)
 #define unwind_push(...)
 
