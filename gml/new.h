@@ -8,24 +8,25 @@
 #define _g_new_1(T) \
 ({\
     typeof(T) *p=malloc(sizeof(T));\
-    if(p==NULL) throw(error_bad_alloc);\
-    p;\
+    if(__builtin_expect(p==NULL,0)) throw(error_bad_alloc);\
+    (typeof(T)*)p;\
 })
 
 #include"_new.inc"
 
 #define _g_new_with_init(T,...) \
 ({\
-    typeof(T) *p=malloc(sizeof(T));\
-    if(p==NULL) throw(error_bad_alloc);\
-    *p=(T){__VA_ARGS__};\
-    p;\
+    typedef typeof(T) type;\
+    type *p=malloc(sizeof(type));\
+    if(__builtin_expect(p==NULL,0)) throw(error_bad_alloc);\
+    *p=(type){__VA_ARGS__};\
+    (typeof(T)*)p;\
 })
 
 #define new_array(T,n) \
 ({\
     typeof(T) *p=malloc(sizeof(T)*(n));\
-    if(p==NULL) throw(error_bad_alloc);\
+    if(__builtin_expect(p==NULL,0)) throw(error_bad_alloc);\
     p;\
 })
 
@@ -33,15 +34,15 @@
 ({\
     auto ptr_ptr=&(ptr);\
     typeof(ptr) p=realloc(*ptr_ptr,n);\
-    if(p==NULL) throw(error_bad_alloc);\
+    if(__builtin_expect(p==NULL,0)) throw(error_bad_alloc);\
     *ptr_ptr=p;\
 })
 
 #define delete(ptr) free(ptr)
 
-#define auto_ptr __attribute__((cleanup(_g_gml_deleter_wrapper))) auto
+#define auto_ptr __attribute__((cleanup(_g_gml_deleter_wrapper))) auto const
 
-static inline void _g_gml_deleter_wrapper(void *p)
+static inline void _g_gml_deleter_wrapper(const void *p)
 {
     delete(*(void**)p);
 }
