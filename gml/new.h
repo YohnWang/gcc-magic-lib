@@ -33,7 +33,7 @@
 #define resize_array(ptr,n) \
 ({\
     auto ptr_ptr=&(ptr);\
-    typeof(ptr) p=realloc(*ptr_ptr,n);\
+    typeof(ptr) p=realloc(*ptr_ptr,n*sizeof(ptr[0]));\
     if(__builtin_expect(p==NULL,0)) throw(error_bad_alloc);\
     *ptr_ptr=p;\
 })
