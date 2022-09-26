@@ -31,4 +31,12 @@
 #define expression_repeat(times,...) macro_cat(_g_expression_repeat_,times)(__VA_ARGS__)
 #define _g_expression_repeat_1(...)  __VA_ARGS__
 
+// position
+#define where_from() __FILE__":"macro_tostr(__LINE__)
+
+// expression select
+#include"_expression_select.inc"
+#define expression_select(which,...) macro_cat(_g_expression_select_,count_macro_args(__VA_ARGS__))(which,__VA_ARGS__)
+
+
 #endif
