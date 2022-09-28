@@ -9,3 +9,6 @@ py numeric_min.py > ../gml/_numeric_min.inc
 py throw.py > ../gml/_throw.inc
 py new.py > ../gml/_new.inc
 py expression_select.py > ../gml/_expression_select.inc
+py value_to_type_list.py > ../gml/_value_to_type_list.inc
+py macro_perfix_place.py > ../gml/_macro_perfix_place.inc
+py macro_suffix_place.py > ../gml/_macro_suffix_place.inc

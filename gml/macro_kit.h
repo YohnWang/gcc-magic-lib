@@ -26,6 +26,14 @@
 
 #define macro_function_guide(func,...) macro_cat(func,_,count_macro_args(__VA_ARGS__))(__VA_ARGS__) 
 
+// macro cat all perfix
+#include"_macro_perfix_place.inc"
+#define macro_perfix_place(perfix,...) macro_cat(_g_macro_perfix_place_,count_macro_args(__VA_ARGS__))(perfix,__VA_ARGS__)
+
+// macro cat all suffix
+#include"_macro_suffix_place.inc"
+#define macro_suffix_place(suffix,...) macro_cat(_g_macro_suffix_place_,count_macro_args(__VA_ARGS__))(suffix,__VA_ARGS__)
+
 // expression repeat
 #include"_expression_repeat.inc"
 #define expression_repeat(times,...) macro_cat(_g_expression_repeat_,times)(__VA_ARGS__)
@@ -38,5 +46,12 @@
 #include"_expression_select.inc"
 #define expression_select(which,...) macro_cat(_g_expression_select_,count_macro_args(__VA_ARGS__))(which,__VA_ARGS__)
 
+// args match type
+#include"_value_to_type_list.inc"
+#define value_to_type_list(...) macro_cat(_g_value_to_type_list_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+
+#define _g_make_int_function_ptr(...) (int(*)(value_to_type_list(__VA_ARGS__))){0}
+
+#define args_match_type(args, ...) _Generic(_g_make_int_function_ptr(value_to_type_list args), macro_perfix_place(int(*),__VA_ARGS__))
 
 #endif
