@@ -16,5 +16,6 @@
 #include"gml/string.h"
 #include"gml/function.h"
 #include"gml/new.h"
+#include"gml/iofmt.h"
 
 #endif
