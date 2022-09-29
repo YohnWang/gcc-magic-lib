@@ -1,3 +1,4 @@
+#define _g_expression_select_1(which,e1) __builtin_choose_expr((which)==1,e1,({_Static_assert((which)>0&&(which)<=1,"value of which out of range");}))
 #define _g_expression_select_2(which,e1,e2) __builtin_choose_expr((which)==1,e1,__builtin_choose_expr((which)==2,e2,({_Static_assert((which)>0&&(which)<=2,"value of which out of range");})))
 #define _g_expression_select_3(which,e1,e2,e3) __builtin_choose_expr((which)==1,e1,__builtin_choose_expr((which)==2,e2,__builtin_choose_expr((which)==3,e3,({_Static_assert((which)>0&&(which)<=3,"value of which out of range");}))))
 #define _g_expression_select_4(which,e1,e2,e3,e4) __builtin_choose_expr((which)==1,e1,__builtin_choose_expr((which)==2,e2,__builtin_choose_expr((which)==3,e3,__builtin_choose_expr((which)==4,e4,({_Static_assert((which)>0&&(which)<=4,"value of which out of range");})))))

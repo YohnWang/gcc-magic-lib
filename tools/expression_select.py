@@ -14,7 +14,7 @@ def f(x,i=1):
     f(x-1,i+1)
     print(')',end='')
 
-for i in range(2,33):
+for i in range(1,33):
     print(f'#define _g_expression_select_{i}(which,{args(i+1)})',end=' ')
     f(i)
     print()
