@@ -9,6 +9,7 @@
 // type
 #define type_is_same(T1,T2) (_Generic((typeof(T1)*){0},typeof(T2)*:1,default:0))
 #define type_is_integral(T) (_Generic((typeof(T)){0},signed char:1,unsigned char:1,short:1,unsigned short:1,int:1,unsigned int:1,long:1,unsigned long:1,long long:1,unsigned long long:1,default:0))
+#define type_is_float(T) (_Generic((typeof(T)){0},float:1,double:1,long double:1,default:0))
 #define type_is_equal_helper(T1,T2) (_Generic((typeof(T1)){0},typeof(T2):1,default:0))
 #define type_is_equal(T1,T2) (type_is_equal_helper(T1,T2)||type_is_equal_helper(T2,T1))
 #define type_is_signed(T) (_Generic((typeof(T)){0},signed char:1,short:1,int:1,long:1,long long:1,float:1,double:1,default:0))
