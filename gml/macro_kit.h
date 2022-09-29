@@ -52,6 +52,6 @@
 
 #define _g_make_int_function_ptr(...) (int(*)(value_to_type_list(__VA_ARGS__))){0}
 
-#define args_match_type(args, ...) _Generic(_g_make_int_function_ptr(value_to_type_list args), macro_perfix_place(int(*),__VA_ARGS__))
+#define args_match_type(args, ...) _Generic(_g_make_int_function_ptr args, macro_perfix_place(int(*),__VA_ARGS__))
 
 #endif
