@@ -17,5 +17,6 @@
 #include"gml/function.h"
 #include"gml/new.h"
 #include"gml/iofmt.h"
+#include"gml/bits.h"
 
 #endif
