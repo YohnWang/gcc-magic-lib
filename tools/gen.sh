@@ -13,3 +13,4 @@ py value_to_type_list.py > ../gml/_value_to_type_list.inc
 py macro_perfix_place.py > ../gml/_macro_perfix_place.inc
 py macro_suffix_place.py > ../gml/_macro_suffix_place.inc
 py print.py > ../gml/_print.inc
+py is_constexpr.py > ../gml/_is_constexpr.inc

@@ -28,6 +28,7 @@
 #define static_assert_type_is_unsigned(T) _Static_assert(type_is_unsigned(T),"type is not unsigned")
 #define static_assert_is_constexpr(expr) _Static_assert(is_constexpr(expr),"expression is not const")
 
-#define is_constexpr(expr) __builtin_constant_p(expr)
+#include"gml/_is_constexpr.inc"
+#define is_constexpr(...) macro_cat(_g_is_constexpr_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 
 #endif
