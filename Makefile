@@ -1,34 +1,29 @@
-srcs=main.c
-objs=$(srcs:%.c=%.o)
-cflags = -O3 -Wall -Wextra -Wno-unused -I .
-ldflags = -lpthread
+target = main.exe
 
-all: main.exe
-	./main.exe
+build_dir = build
 
-bgn: bgn.exe
-	./bgn.exe 
+srcs = main.c gmllib.c
 
-bgn.exe: test/bgn_boost.o
+objs = $(srcs:%=$(build_dir)/%.o)
+deps = $(objs:%.o=%.d)
+
+cflags = -g -O3 -Wall  -Wno-unused -I . -MMD -MP
+ldflags = -lpthread -lm
+
+all: $(target)
+	./$(target)
+
+$(target): $(objs)
 	gcc $^ -o $@ $(ldflags)
 
-main.exe: main.o gmllib.o
-	gcc $^ -o $@ $(ldflags)
-
-%.o: %.c
+$(build_dir)/%.c.o: %.c
+	mkdir -p $(build_dir)
 	gcc $(cflags) -c $< -o $@
 
-sinclude $(srcs:.c=.d)
-
-%.d: %.c
-	gcc -MM $(cflags) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-.PHONY: clean run
-
-run: main.exe 
-	./main.exe
+.PHONY : clean
 
 clean:
-	find . '(' -name "*.o" -or -name "*.d" -or -name "*.exe" ')' -delete
+	rm -rf build
+	rm -f $(target)
+
+-include $(deps)
