@@ -146,16 +146,6 @@
 
 #define execute_times(times) _g_execute_times(times,macro_cat(_g_execute_times_counter_,__COUNTER__))
 
-#define _g_execute_times(times,counter) \
-    static _Thread_local int counter=0; \
-    for(;(counter)<times;(counter)++)
 
-#define execute_once execute_times(1)
-
-#define execute_less_than(times) _g_execute_less_than(times,macro_cat(_g_execute_less_than_counter_,__COUNTER__))
-
-#define _g_execute_less_than(times,counter) \
-    static _Thread_local int counter=0; \
-    if((counter++)<times)
 
 #endif

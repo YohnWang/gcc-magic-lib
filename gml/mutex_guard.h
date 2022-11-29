@@ -23,4 +23,24 @@ static inline void cleanup_mutex_guard(struct mutex_guard_t *guard)
 
 #define mutex_guard RAII(struct mutex_guard_t,cleanup_mutex_guard)
 
+#include<stdatomic.h>
+
+#define _g_once_block(once_flag) \
+    static atomic_flag once_flag=ATOMIC_FLAG_INIT;\
+    if(!atomic_flag_test_and_set(&once_flag))
+
+#define once_block _g_once_block(macro_cat(_g_once_flag_,__COUNTER__))
+
+#define _g_execute_times(times,counter) \
+    static _Thread_local int counter=0; \
+    for(;(counter)<times;(counter)++)
+
+#define execute_once execute_times(1)
+
+#define execute_less_than(times) _g_execute_less_than(times,macro_cat(_g_execute_less_than_counter_,__COUNTER__))
+
+#define _g_execute_less_than(times,counter) \
+    static _Thread_local int counter=0; \
+    if((counter++)<times)
+
 #endif
