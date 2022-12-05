@@ -4,6 +4,7 @@
 
 #include"RAII.h"
 #include<pthread.h>
+#include<stdatomic.h>
 
 struct mutex_guard_t
 {
@@ -23,24 +24,18 @@ static inline void cleanup_mutex_guard(struct mutex_guard_t *guard)
 
 #define mutex_guard RAII(struct mutex_guard_t,cleanup_mutex_guard)
 
-#include<stdatomic.h>
+
+#define mutex_block(mutex_ptr) _g_mutex_block(mutex_ptr,macro_cat(_g_once_flag_int_,__COUNTER__))
+#define _g_mutex_block(mutex_ptr,once_flag) \
+    static int once_flag=1;\
+    for(mutex_guard m=make_mutex_guard(mutex_ptr);once_flag;once_flag--)
+
 
 #define _g_once_block(once_flag) \
     static atomic_flag once_flag=ATOMIC_FLAG_INIT;\
-    if(!atomic_flag_test_and_set(&once_flag))
+    while(!atomic_flag_test_and_set(&once_flag))
 
 #define once_block _g_once_block(macro_cat(_g_once_flag_,__COUNTER__))
 
-#define _g_execute_times(times,counter) \
-    static _Thread_local int counter=0; \
-    for(;(counter)<times;(counter)++)
-
-#define execute_once execute_times(1)
-
-#define execute_less_than(times) _g_execute_less_than(times,macro_cat(_g_execute_less_than_counter_,__COUNTER__))
-
-#define _g_execute_less_than(times,counter) \
-    static _Thread_local int counter=0; \
-    if((counter++)<times)
 
 #endif
