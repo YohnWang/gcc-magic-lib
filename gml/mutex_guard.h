@@ -27,7 +27,7 @@ static inline void cleanup_mutex_guard(struct mutex_guard_t *guard)
 
 #define mutex_block(mutex_ptr) _g_mutex_block(mutex_ptr,macro_cat(_g_once_flag_int_,__COUNTER__))
 #define _g_mutex_block(mutex_ptr,once_flag) \
-    static int once_flag=1;\
+    int once_flag=1;\
     for(mutex_guard m=make_mutex_guard(mutex_ptr);once_flag;once_flag--)
 
 
