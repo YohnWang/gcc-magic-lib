@@ -240,4 +240,28 @@
     next_permutation(array,length);\
 })
 
+#define naccumulate(...) numeric_accumulate(__VA_ARGS__)
+
+#define numeric_accumulate(...) macro_cat(_g_numeric_accumulate_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+
+#define _g_numeric_accumulate_2(...) _g_numeric_accumulate_4(__VA_ARGS__,0,+)
+
+#define _g_numeric_accumulate_3(...) _g_numeric_accumulate_4(__VA_ARGS__,+)
+
+#define _g_numeric_accumulate_4(array,len,init,operator) \
+({\
+    typedef typeof(array) arr_t;\
+    typedef typeof(array[0]) elem_t;\
+    typedef typeof(init) init_t;\
+    static_assert_type_is_numeric(elem_t);\
+    static_assert_type_is_numeric(init);\
+    init_t accumulate(arr_t a,size_t n)\
+    {\
+        init_t r=init;\
+        for(size_t i=0;i<n;i++){r=r operator a[i];}\
+        return r;\
+    }\
+    accumulate(array,len);\
+})
+
 #endif
