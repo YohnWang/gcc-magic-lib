@@ -3,8 +3,7 @@
 #define GML_MACRO_KIT_H
 
 #define attr_unused __attribute__((unused))
-#define auto __auto_type
-#define let __auto_type
+#define auto __auto_type // c23 support auto
 #define attr_cleanup(cleanup_func) __attribute__((cleanup(cleanup_func)))
 
 // counting numbers of macro arguments
@@ -40,7 +39,7 @@
 #define _g_expression_repeat_1(...)  __VA_ARGS__
 
 // position
-#define where_from() __FILE__":"macro_tostr(__LINE__)
+#define where_from() __FILE__ ":" macro_tostr(__LINE__)
 
 // expression select
 #include"_expression_select.inc"
