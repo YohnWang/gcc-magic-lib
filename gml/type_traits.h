@@ -4,7 +4,8 @@
 
 // builtin array
 #define is_builtin_array(a) ({struct{typeof(a) x;} x={}; (intptr_t)(x.x)==(intptr_t)(&x.x);})
-#define len_builtin_array(a) ({static_assert_is_builtin_array(a); sizeof(a)/sizeof(a[0]);})
+#define len_builtin_array(a) (__builtin_choose_expr(1,sizeof(a)/sizeof(a[0]),({static_assert_is_builtin_array(a);})))
+#define array_size(a) len_builtin_array(a)
 
 // type
 #define type_is_same(T1,T2) (_Generic((typeof(T1)*){0},typeof(T2)*:1,default:0))
