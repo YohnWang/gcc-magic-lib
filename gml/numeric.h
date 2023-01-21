@@ -264,4 +264,23 @@
     accumulate(array,len);\
 })
 
+#define gcd(a,b) \
+({\
+    auto x=a;\
+    auto y=b;\
+    while(y!=0)\
+    {\
+        x=y;\
+        y=x%y;\
+    }\
+    x;\
+})
+
+#define lcm(a,b) \
+({\
+    auto x=a;\
+    auto y=b;\
+    x/gcd(x,y)*y;\
+})
+
 #endif
