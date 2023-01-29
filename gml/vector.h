@@ -69,11 +69,22 @@ static __attribute__((always_inline)) inline void vector_del(void *vptr)
     vector_reset(v);
 }
 
-#define vector_clear(vptr) \
+#define vector_clear(...) macro_cat(_g_vector_clear_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
+#define _g_vector_clear_1(vptr) \
 ({\
     vector_local_typedef(vptr);\
     __attribute__((always_inline)) inline void vector_clear_helper(vector_type_t *v)\
     {\
+        v->size=0;\
+    }\
+    vector_clear_helper(vptr);\
+})
+#define _g_vector_clear_2(vptr,distructor) \
+({\
+    vector_local_typedef(vptr);\
+    __attribute__((always_inline)) inline void vector_clear_helper(vector_type_t *v)\
+    {\
+        for(auto i=vector_size(v)-1;i>=0;i--){distructor(vector_at(v,i));}\
         v->size=0;\
     }\
     vector_clear_helper(vptr);\
