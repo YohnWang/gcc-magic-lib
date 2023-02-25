@@ -1,6 +1,4 @@
-#ifndef GML_IOFMT_H
-#define GML_IOFMT_H
-
+#pragma once
 
 static inline void _g_print_char(char x)
 {
@@ -77,4 +75,6 @@ static inline void _g_print_cstring(const char *s)
 #include"_print.inc"
 #define print(...) macro_cat(_g_print_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 
-#endif
+#include"_place_point.inc"
+#define _g_place_point_0() print(where_from(),"\n")
+#define place_point(...) macro_cat(_g_place_point_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
