@@ -61,6 +61,10 @@ static inline void _g_print_cstring(const char *s)
 #define print_object(x) _Generic((x),\
                             char:_g_print_char,\
                             bool:_g_print_bool,\
+                            signed char:_g_print_int,\
+                            unsigned char:_g_print_uint,\
+                            short:_g_print_int,\
+                            unsigned short:_g_print_uint,\
                             int :_g_print_int,\
                             unsigned int:_g_print_uint,\
                             long:_g_print_long,\

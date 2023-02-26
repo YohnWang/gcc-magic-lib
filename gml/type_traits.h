@@ -12,6 +12,7 @@
 #define type_is_integral(T) (_Generic((typeof(T)){0},signed char:1,unsigned char:1,short:1,unsigned short:1,int:1,unsigned int:1,long:1,unsigned long:1,long long:1,unsigned long long:1,default:0))
 #define type_is_float(T) (_Generic((typeof(T)){0},float:1,double:1,long double:1,default:0))
 #define type_is_bool(T) _Generic((typeof(T)){0},bool:1,default:0)
+#define type_is_char(T) _Generic((typeof(T)){0},char:1,default:0)
 #define type_is_equal(T1,T2) __builtin_types_compatible_p(typeof(T1),typeof(T2))
 #define type_is_signed(T) (_Generic((typeof(T)){0},signed char:1,short:1,int:1,long:1,long long:1,float:1,double:1,default:0))
 #define type_is_unsigned(T) (_Generic((typeof(T)){0},unsigned char:1,unsigned short:1,unsigned int:1,unsigned long:1,unsigned long long:1,default:0))
