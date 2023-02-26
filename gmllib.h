@@ -2,8 +2,10 @@
 #ifndef GMLLIB_ALL_H
 #define GMLLIB_ALL_H
 
-#include"gml/RAII.h"
 #include"gml/macro_kit.h"
+
+#ifndef __cplusplus
+#include"gml/RAII.h"
 #include"gml/type_traits.h"
 #include"gml/mutex_guard.h"
 #include"gml/utils.h"
@@ -16,7 +18,8 @@
 #include"gml/string.h"
 #include"gml/function.h"
 #include"gml/new.h"
-#include"gml/iofmt.h"
+#include"gml/print.h"
 #include"gml/bits.h"
+#endif
 
 #endif
