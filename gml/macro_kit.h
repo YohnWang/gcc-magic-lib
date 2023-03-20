@@ -3,7 +3,9 @@
 #define GML_MACRO_KIT_H
 
 #define attr_unused __attribute__((unused))
+#ifndef __cplusplus
 #define auto __auto_type // c23 support auto
+#endif
 #define attr_cleanup(cleanup_func) __attribute__((cleanup(cleanup_func)))
 
 // counting numbers of macro arguments
