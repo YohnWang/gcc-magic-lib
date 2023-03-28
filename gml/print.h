@@ -65,6 +65,8 @@ static inline void _g_print_cstring(const char *s)
                             bool:_g_print_bool,\
                             signed char:_g_print_int,\
                             unsigned char:_g_print_uint,\
+                            short:_g_print_int,\
+                            unsigned short:_g_print_uint,\
                             int :_g_print_int,\
                             unsigned int:_g_print_uint,\
                             long:_g_print_long,\
@@ -77,6 +79,8 @@ static inline void _g_print_cstring(const char *s)
                             const char*:_g_print_cstring)(x)
 
 #else
+
+extern "C++"{
 
 static inline void print_object(char x)
 {
@@ -136,12 +140,15 @@ static inline void print_object(const char *s)
     printf("%s",s);
 }
 
+}
 #endif
 
 #include"_print.inc"
 #define print(...) macro_cat(_g_print_,count_macro_args(__VA_ARGS__))(__VA_ARGS__)
 
 #define println(...) print(__VA_ARGS__,"\n")
+#define println_red(...) ({print_object("\e[31m"); println(__VA_ARGS__); print_object("\e[0m");})
+
 
 #include"_place_point.inc"
 #define _g_place_point_0() print(where_from(),(char){'\n'})
