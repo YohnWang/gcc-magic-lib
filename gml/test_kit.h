@@ -6,7 +6,7 @@
 #include<time.h>
 #include<stdint.h>
 
-static inline int64_t get_clock_monitonic_ns()
+static inline int64_t get_clock_monotonic_ns()
 {
     struct timespec t = {};
     clock_gettime(CLOCK_MONOTONIC, &t);
@@ -25,14 +25,14 @@ typedef struct time_spend_print_t
 
 attr_unused static inline void _g_time_spend_print(time_spend_print_t *time_spend)
 {
-    int64_t tns=get_clock_monitonic_ns();
+    int64_t tns=get_clock_monotonic_ns();
     const char *fmt=time_spend->fmt?time_spend->fmt:"";
     fprintf(stdout,"\e[31m""%s: used %gms\n""\e[0m",fmt,(tns-time_spend->start)/1000000.0);
 }
 
 attr_unused static inline time_spend_print_t make_time_spend_1(const char *fmt)
 {
-    return (time_spend_print_t){.start=get_clock_monitonic_ns(),.fmt=fmt};
+    return (time_spend_print_t){.start=get_clock_monotonic_ns(),.fmt=fmt};
 }
 
 #define time_spend_print_guard RAII(time_spend_print_t,_g_time_spend_print)
@@ -52,12 +52,12 @@ typedef struct time_spend_get_t
 
 attr_unused static inline void _g_time_spend_get(time_spend_get_t *t)
 {
-    *t->out=get_clock_monitonic_ns()-t->start;
+    *t->out=get_clock_monotonic_ns()-t->start;
 }
 
 attr_unused static inline time_spend_get_t make_time_spend_get(int64_t *out)
 {
-    return (time_spend_get_t){.start=get_clock_monitonic_ns(),.out=out};
+    return (time_spend_get_t){.start=get_clock_monotonic_ns(),.out=out};
 }
 
 #define time_spend_get_guard RAII(time_spend_get_t,_g_time_spend_get)
@@ -68,7 +68,7 @@ attr_unused static inline time_spend_get_t make_time_spend_get(int64_t *out)
 
 struct time_spend_print_t
 {
-    int64_t start=get_clock_monitonic_ns();
+    int64_t start=get_clock_monotonic_ns();
     const char *fmt;
     bool once_flag=true;
 
@@ -76,7 +76,7 @@ struct time_spend_print_t
 
     ~time_spend_print_t()
     {
-        int64_t tns=get_clock_monitonic_ns();
+        int64_t tns=get_clock_monotonic_ns();
         const char *fmt=this->fmt?this->fmt:"";
         fprintf(stdout,"\e[31m""%s: used %gms\n""\e[0m",fmt,(tns-start)/1000000.0);
     }
@@ -99,7 +99,7 @@ struct time_spend_print_t
 
 struct time_spend_get_t
 {
-    int64_t start=get_clock_monitonic_ns();
+    int64_t start=get_clock_monotonic_ns();
     int64_t *out;
     bool once_flag=true;
 
@@ -107,7 +107,7 @@ struct time_spend_get_t
 
     ~time_spend_get_t()
     {
-        *out=get_clock_monitonic_ns()-start;
+        *out=get_clock_monotonic_ns()-start;
     }
 
     time_spend_get_t& operator=(bool b)
