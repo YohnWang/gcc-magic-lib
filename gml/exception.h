@@ -21,9 +21,9 @@ enum errors
     error_unknow=-1
 };
 
-void exception_throw(int e);
+__attribute__((noreturn)) void exception_throw(int e);
 
-#define throw(...) ({macro_function_guide(throw,##__VA_ARGS__);})
+#define throw(...) ({fprintf(stderr,"exception throw in " where_from() "\n");macro_function_guide(throw,##__VA_ARGS__);})
 
 #define throw_0() exception_throw(_g_jmp_ret)
 #define throw_1(x) exception_throw(x)
@@ -37,7 +37,6 @@ void exception_throw(int e);
 #include"_throw.inc"
 
 // exception context
-#include"vector.h"
 
 extern _Thread_local volatile int _g_jmp_ret;
 extern _Thread_local jmp_buf * volatile _g_jmp_buf_ptr;
@@ -72,7 +71,6 @@ for(def = _g_jmp_ret;_g_jmp_ret;_g_jmp_ret=0)
 
 
 typedef void (*unwinding_function_t)();
-vector_def(unwinding_function_t);
 
 static inline void recover_exception_jmp_buf_ptr(jmp_buf *volatile *before)
 {
@@ -119,7 +117,6 @@ RAII(volatile ssize_t * volatile,unwind_table_len_recover_function) mark=&unwind
 ({\
     unwinding_table[unwinding_table_len++]=(void*)fbind(f,__VA_ARGS__);\
 })
-
 
 // macro NO_GML_EXCEPTION ignore exception
 #ifdef NO_GML_EXCEPTION
