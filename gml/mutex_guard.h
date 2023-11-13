@@ -25,17 +25,17 @@ static inline void cleanup_mutex_guard(struct mutex_guard_t *guard)
 #define mutex_guard RAII(struct mutex_guard_t,cleanup_mutex_guard)
 
 
-#define mutex_block(mutex_ptr) _g_mutex_block(mutex_ptr,macro_cat(_g_once_flag_int_,__COUNTER__))
-#define _g_mutex_block(mutex_ptr,once_flag) \
-    int once_flag=1;\
-    for(mutex_guard m=make_mutex_guard(mutex_ptr);once_flag;once_flag--)
+typedef struct once_block_flag
+{
+    pthread_mutex_t mutex;
+    bool first;
+}once_block_flag;
 
+#define ONCE_BLOCK_FLAG_INIT (once_block_flag){PTHREAD_MUTEX_INITIALIZER,true}
 
-#define _g_once_block(once_flag) \
-    static atomic_flag once_flag=ATOMIC_FLAG_INIT;\
-    while(!atomic_flag_test_and_set(&once_flag))
+#define once_block(flag) _g_once_block(flag)
 
-#define once_block _g_once_block(macro_cat(_g_once_flag_,__COUNTER__))
-
+#define _g_once_block(flag) \
+for(mutex_guard _g_=make_mutex_guard(&(flag).mutex);(flag).first;(flag).first=false)
 
 #endif
